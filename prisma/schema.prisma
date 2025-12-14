@@ -1,0 +1,199 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id           String          @id @default(cuid())
+  email        String          @unique
+  name         String
+  role         UserRole        @default(USER)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  courses      AcademyCourse[]
+  blogPosts    BlogPost[]
+  testimonials Testimonial[]
+
+  @@map("users")
+}
+
+model BlogPost {
+  id          String   @id @default(cuid())
+  title       String
+  excerpt     String
+  content     String
+  slug        String   @unique
+  publishedAt DateTime @default(now())
+  image       String?
+  category    String
+  tags        String
+  readTime    Int      @default(5)
+  authorId    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@map("blog_posts")
+}
+
+model Project {
+  id           String   @id @default(cuid())
+  title        String
+  description  String
+  content      String
+  image        String
+  category     String
+  technologies String
+  client       String
+  completedAt  DateTime
+  liveUrl      String?
+  githubUrl    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("projects")
+}
+
+model AcademyCourse {
+  id           String         @id @default(cuid())
+  title        String
+  description  String
+  content      String
+  instructorId String
+  duration     String
+  level        CourseLevel
+  price        Float
+  image        String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  instructor   User           @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  modules      CourseModule[]
+
+  @@map("academy_courses")
+}
+
+model CourseModule {
+  id        String        @id @default(cuid())
+  title     String
+  duration  String
+  courseId  String
+  order     Int
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  course    AcademyCourse @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons   Lesson[]
+
+  @@map("course_modules")
+}
+
+model Lesson {
+  id       String       @id @default(cuid())
+  title    String
+  duration String
+  type     LessonType
+  moduleId String
+  order    Int
+  content  String?
+  videoUrl String?
+  module   CourseModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@map("lessons")
+}
+
+model Service {
+  id           String        @id @default(cuid())
+  title        String
+  description  String
+  icon         String
+  features     String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  pricingTiers PricingTier[]
+
+  @@map("services")
+}
+
+model PricingTier {
+  id        String  @id @default(cuid())
+  name      String
+  price     Float
+  features  String
+  popular   Boolean @default(false)
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@map("pricing_tiers")
+}
+
+model Testimonial {
+  id         String   @id @default(cuid())
+  content    String
+  author     String
+  role       String
+  company    String
+  image      String
+  rating     Int      @default(5)
+  authorId   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  authorUser User?    @relation(fields: [authorId], references: [id])
+
+  @@map("testimonials")
+}
+
+model Contact {
+  id        String        @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  status    ContactStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("contacts")
+}
+
+model ChatMessage {
+  id        String        @id @default(cuid())
+  sessionId String
+  text      String
+  sender    MessageSender
+  timestamp DateTime      @default(now())
+
+  @@map("chat_messages")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum LessonType {
+  VIDEO
+  TEXT
+  QUIZ
+}
+
+enum ContactStatus {
+  PENDING
+  READ
+  REPLIED
+  CLOSED
+}
+
+enum MessageSender {
+  USER
+  BOT
+}

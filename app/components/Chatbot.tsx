@@ -1,10 +1,9 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
+import { Button } from './ui/button'
+import { Input } from './ui/input'
+import { Badge } from './ui/badge'
 import { 
   MessageCircle, 
   X, 
@@ -12,7 +11,8 @@ import {
   Bot, 
   User,
   ChevronUp,
-  ChevronDown
+  ChevronDown,
+  Phone
 } from 'lucide-react'
 
 interface Message {
@@ -33,8 +33,8 @@ const chatbotResponses = {
     "Nos services incluent le développement web moderne, les applications mobiles, les solutions cloud sécurisées, et l'analyse de données. Que souhaitez-vous savoir ?"
   ],
   contact: [
-    "Vous pouvez nous contacter via notre page contact, par email à contact@solvaticatech.com, ou par téléphone au +222 XXX XXX XXX.",
-    "Pour nous contacter, visitez notre page contact ou envoyez-nous un email à contact@solvaticatech.com."
+    "Vous pouvez nous contacter via notre page contact, par email à contact@solvaticatech.com, ou par WhatsApp au +22247776444.",
+    "Pour nous contacter, visitez notre page contact, envoyez-nous un email à contact@solvaticatech.com, ou contactez-nous directement sur WhatsApp au +22247776444."
   ],
   pricing: [
     "Nos tarifs varient selon la complexité du projet. Contactez-nous pour un devis personnalisé gratuit.",
@@ -147,10 +147,24 @@ export default function Chatbot() {
     setTimeout(() => handleSendMessage(), 100)
   }
 
+  const whatsappNumber = '+22247776444'
+  const whatsappUrl = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}`
+
   return (
     <>
-      {/* Chatbot Button */}
-      <div className="fixed bottom-4 right-4 z-50">
+      {/* WhatsApp Button */}
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-3">
+        <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="h-14 w-14 rounded-full bg-green-500 hover:bg-green-600 shadow-lg flex items-center justify-center transition-colors"
+          aria-label="Contacter sur WhatsApp"
+        >
+          <Phone className="h-6 w-6 text-white" />
+        </a>
+        
+        {/* Chatbot Button */}
         <Button
           onClick={() => setIsOpen(!isOpen)}
           className="h-14 w-14 rounded-full bg-blue-600 hover:bg-blue-700 shadow-lg"
@@ -162,7 +176,7 @@ export default function Chatbot() {
 
       {/* Chatbot Window */}
       {isOpen && (
-        <div className="fixed bottom-20 right-4 z-50 w-80 h-96 bg-white rounded-lg shadow-xl border border-gray-200 flex flex-col">
+        <div className="fixed bottom-24 right-4 z-50 w-80 h-96 bg-white rounded-lg shadow-xl border border-gray-200 flex flex-col">
           {/* Header */}
           <div className="bg-blue-600 text-white p-4 rounded-t-lg flex items-center justify-between">
             <div className="flex items-center space-x-2">

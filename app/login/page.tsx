@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/components/AuthProvider'
-import { useToast } from '@/hooks/use-toast'
+import { useToast } from '@/components/ui/use-toast'
 import { Eye, EyeOff, Lock, Mail, ArrowLeft } from 'lucide-react'
 
 export default function LoginPage() {
